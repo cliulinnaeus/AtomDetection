@@ -22,43 +22,43 @@ def generate_rand_psd_matrix(N):
         variances.append(B)
     return np.array(variances)
 
-def generate_training_data(img_size, N, signal_noise_ratio):
-    """
-    generate data and label for training
-    Inputs: 
-        img_size: image size
-        N: number of data points
-        signal_noise_ratio: strength of signal / strength of photon noise
-    Outputs:
-        data: N matrices of size img_size X img_size
-        labels: one-hot label vector of size N. 1: there is atom
-    """
-    signal_strength = 100
-    noise_strength = signal_strength / signal_noise_ratio
-    # print(noise_strength)
-    # center = np.array([img_size // 2, img_size // 2])    
-    x0, y0 = img_size//2, img_size//2 
+# def generate_training_data(img_size, N, signal_noise_ratio):
+#     """
+#     generate data and label for training
+#     Inputs: 
+#         img_size: image size
+#         N: number of data points
+#         signal_noise_ratio: strength of signal / strength of photon noise
+#     Outputs:
+#         data: N matrices of size img_size X img_size
+#         labels: one-hot label vector of size N. 1: there is atom
+#     """
+#     signal_strength = 100
+#     noise_strength = signal_strength / signal_noise_ratio
+#     # print(noise_strength)
+#     # center = np.array([img_size // 2, img_size // 2])    
+#     x0, y0 = img_size//2, img_size//2 
 
-    signal = create_signal(img_size, 1, x0, y0, spread=5, strength=signal_strength)
+#     signal = create_signal(img_size, 1, x0, y0, spread=5, strength=signal_strength)
 
-    data = []
-    labels = []
+#     data = []
+#     labels = []
 
-    for i in range(N):
-        # TODO: background_noise strength should be parametrized by noise_strength
-        background_noise = create_background_shot_noise(img_size, strength=noise_strength)
-        print(background_noise[0,0])
-        a = np.random.rand()
-        if a > 0.5:
-            photon_shot_noise = create_photon_shot_noise(0.1, signal+background_noise, strength=noise_strength)
-            data.append(signal + photon_shot_noise + background_noise)    
-            labels.append(1)
-        else:
-            photon_shot_noise = create_photon_shot_noise(0.1, background_noise, strength=noise_strength) 
-            data.append(photon_shot_noise + background_noise)
-            labels.append(0)
+#     for i in range(N):
+#         # TODO: background_noise strength should be parametrized by noise_strength
+#         background_noise = create_background_shot_noise(img_size, strength=noise_strength)
+#         print(background_noise[0,0])
+#         a = np.random.rand()
+#         if a > 0.5:
+#             photon_shot_noise = create_photon_shot_noise(0.1, signal+background_noise, strength=noise_strength)
+#             data.append(signal + photon_shot_noise + background_noise)    
+#             labels.append(1)
+#         else:
+#             photon_shot_noise = create_photon_shot_noise(0.1, background_noise, strength=noise_strength) 
+#             data.append(photon_shot_noise + background_noise)
+#             labels.append(0)
 
-    return np.array(data), np.array(labels)
+#     return np.array(data), np.array(labels)
 
 
 def box_luminosity(data, box_size, x, y):
