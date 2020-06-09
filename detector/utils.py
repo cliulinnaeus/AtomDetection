@@ -105,5 +105,3 @@ def predict(data, thresh, box_size, x, y):
 
     return None
 
-if __name__ == '__main__':
-    print('hi')

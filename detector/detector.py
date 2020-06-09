@@ -1,17 +1,30 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
 
 class detector():
-    def __init__(self, img_size):
+    def __init__(self, img_size, x0, y0, dx, dy):
         self.img_size = img_size
         self.thresh = 0
+
+        if x0+dx-1 > img_size or y0+dy-1 >img_size:
+            raise Exception("Detection region is not in range")
+        
+        self.x0 = x0
+        self.y0 = y0
+        self.dx = dx
+        self.dy = dy
+
+
+
 
     def predict(self, data):
         labels_pred = []
         for d in data:
-            tot_sum = np.sum(d)
+            box = d[self.x0:self.x0+self.dx, self.y0:self.y0+self.dy]
+            tot_sum = np.sum(box)
 
             if tot_sum > self.thresh:
                 labels_pred.append(1)
@@ -23,20 +36,21 @@ class detector():
     # take a validation set out of data
     # 
     def train(self, data, labels, verbose=False):
-        data_tr, data_val, labels_tr, labels_val = train_test_split(data, labels, test_size=0.3)
+        data_tr, data_val, labels_tr, labels_val = train_test_split(data, labels, test_size=0.33)
 
         sums = []
         for d in data_tr:
-            sums.append(np.sum(d))
+            box = d[self.x0:self.x0+self.dx, self.y0:self.y0+self.dy]
+            sums.append(np.sum(box))
 
         max_sum = np.max(sums)
         min_sum = np.min(sums)
 
         if verbose:
-            plt.hist(sums, bins=30)
+            plt.hist(sums, bins=50, normed=True)
             plt.show()
 
-        thresh_candidates = np.linspace(min_sum, max_sum, int(max_sum-min_sum+1))
+        thresh_candidates = np.linspace(min_sum, max_sum, int(max_sum-min_sum+1)//2)
         accuracies = []
         for thresh in thresh_candidates:
             self.thresh = thresh
@@ -48,6 +62,7 @@ class detector():
         
         y_hat = self.predict(data_tr)
         accuracy_tr = accuracy_score(labels_tr, y_hat)
+
 
         print(f"Training accuracy: {accuracy_tr}")
         print(f"Validation accuracy: {np.max(accuracies)}")

@@ -17,7 +17,6 @@ class simulator():
     def _shot_noise_from_signal(self, signal):
         lam = self._photon_signal_to_electric_signal(signal)
         return np.random.poisson(lam=lam, size=signal.shape)
-
     
     def _create_signal(self, x0, y0, photons_from_atom, verbose=False):       
         x = y = np.linspace(0, self.img_size-1, self.img_size)
