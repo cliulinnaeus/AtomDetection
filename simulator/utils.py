@@ -96,7 +96,7 @@ class simulator():
 
 
 def gaussian(x, y, x0, y0, s):
-        return (1/ (2*np.pi*s)) * np.exp(-(x-x0)**2 / (2*s)) * np.exp(-(y-y0)**2 / (2*s))
+        return np.exp(-(x-x0)**2 / (2*s)) * np.exp(-(y-y0)**2 / (2*s))
 
 
 def visualize(mat2d, figsize=5):

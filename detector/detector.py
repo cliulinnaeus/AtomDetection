@@ -3,6 +3,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 
 class detector():
     def __init__(self, img_size, x0, y0, dx, dy):
@@ -70,6 +72,25 @@ class detector():
 
         return accuracy_tr, np.max(accuracies), self.thresh
     
+    def visualize_data(self, data, figsize=5):
+        fig = plt.figure(figsize=(figsize, figsize))
 
+        ax = fig.add_subplot(111)
+        ax.set_title('colorMap')
+        plt.imshow(data, cmap='hot')
+        ax.set_aspect('equal')
+        cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
+        cax.get_xaxis().set_visible(False)
+        cax.get_yaxis().set_visible(False)
+        cax.patch.set_alpha(0)
+        cax.set_frame_on(False)
+        cbaxes = fig.add_axes([0.95, 0.1, 0.03, 0.8]) 
+        plt.colorbar(orientation='vertical', cax=cbaxes)
+        plt.xlabel("x [pixels]")
+        plt.ylabel("y [pixels]")
+        # cb = plt.colorbar(ax, cax = cax)  
+        rect = patches.Rectangle((self.x0, self.y0), self.dx, self.dy, linewidth=2, edgecolor='g', facecolor='none')
+        ax.add_patch(rect)
+        plt.show()
     
 
