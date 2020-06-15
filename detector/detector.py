@@ -24,14 +24,19 @@ class detector():
 
     def predict(self, data):
         labels_pred = []
+        # if data is just a matrix
+        if len(data.shape) == 2:
+            data = np.array([data])
         for d in data:
             box = d[self.x0:self.x0+self.dx, self.y0:self.y0+self.dy]
             tot_sum = np.sum(box)
-
+            # print(tot_sum)
             if tot_sum > self.thresh:
                 labels_pred.append(1)
             else:
                 labels_pred.append(0)
+        # if show_atom_sig:
+
         return np.array(labels_pred)
         
 
@@ -48,6 +53,7 @@ class detector():
         max_sum = np.max(sums)
         min_sum = np.min(sums)
 
+        # print(f"maxsum:{max_sum}")
         if verbose:
             plt.hist(sums, bins=50, normed=True)
             plt.show()
@@ -65,10 +71,10 @@ class detector():
         y_hat = self.predict(data_tr)
         accuracy_tr = accuracy_score(labels_tr, y_hat)
 
-
-        print(f"Training accuracy: {accuracy_tr}")
-        print(f"Validation accuracy: {np.max(accuracies)}")
-        print(f"Threshold: {self.thresh}")
+        if verbose:
+            print(f"Training accuracy: {accuracy_tr}")
+            print(f"Validation accuracy: {np.max(accuracies)}")
+            print(f"Threshold: {self.thresh}")
 
         return accuracy_tr, np.max(accuracies), self.thresh
     
