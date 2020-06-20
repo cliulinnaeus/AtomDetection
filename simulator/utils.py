@@ -55,7 +55,8 @@ class simulator():
             background_signal = self._create_background(photons_in_background)
 
             shot_noise = self._shot_noise_from_signal(atom_signal + background_signal)
-            signals.append(shot_noise + self._photon_signal_to_electric_signal(atom_signal + background_signal))
+            # signals.append(shot_noise + self._photon_signal_to_electric_signal(atom_signal + background_signal))
+            signals.append(shot_noise)
         output = np.sum(np.array(signals), axis=0)
         if verbose:
             visualize(output)
