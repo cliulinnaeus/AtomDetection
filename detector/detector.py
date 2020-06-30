@@ -100,3 +100,16 @@ class detector():
         plt.show()
     
 
+
+class deconvolution():
+
+    def __init__(self):
+        return None
+
+
+class PCA():
+    def __init__(self):
+        return None
+
+
+
