@@ -34,7 +34,10 @@ def richardson_lucy_deconv(measured, kernel, tot_iter, init=0.5):
     """
     Compute the Richardson Lucy Deconvolution for TOT_ITER times
     """
-    g1 = np.full(measured.shape, init)     # init to something nonnegative
+    if np.ndim(init) > 0:
+        g1 = init
+    else:
+        g1 = np.full(measured.shape, init)     # init to something nonnegative
     kernel_mirror = kernel[::-1, ::-1]
     for _ in range(tot_iter):
         denom = np.abs(fftconvolve(kernel, g1, 'same'))
@@ -45,6 +48,7 @@ def richardson_lucy_deconv(measured, kernel, tot_iter, init=0.5):
 
 
 
+# noise_spectra and obj_spectra should be in fourier space
 def wiener_deconv(img, kernel, noise_spectra, obj_spectra):
     """
     computes 1/H * (1/(1+1/(H^2+S/V)))
@@ -54,7 +58,7 @@ def wiener_deconv(img, kernel, noise_spectra, obj_spectra):
     kernel_fourier = np.fft.fft2(kernel)
     img_fourier = np.fft.fft2(img)
     a = 1 / kernel_fourier * (1 / (1 + 1/(np.abs(kernel_fourier)**2 + SNR)))
-    return np.abs(np.fft.ifft2(a * img_fourier))
+    return np.abs(np.fft.fftshift(np.fft.ifft2(a * img_fourier)))
 
     
 def make_circ_mask(shape, radii):
