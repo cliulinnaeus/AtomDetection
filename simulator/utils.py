@@ -66,7 +66,7 @@ class simulator():
             print(f"photons_in_background: {photons_in_background}")
             print(f"x0: {x0}")
             print(f"y0: {y0}")
-        return output
+        return output.astype(np.float)
 
     def create_simulation_from_SNR(self, x0, y0, SNR, no_atom=False, verbose=False):
         if no_atom:
