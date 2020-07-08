@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import convolve2d
-
+from scipy.signal import fftconvolve
 
 
 """
@@ -17,11 +17,18 @@ def inv_filter(img, kernel):
     return np.abs(np.fft.ifft2(result))
 
 
-def spectral_filter(img, kernel, alpha):
 
-    
+def regularized_filter(img, kernel, alpha, high_pass_filter=None):
+    if high_pass_filter == None:
+        high_pass_filter = make_circ_mask(img.shape, 20)
+        high_pass_filter = -high_pass_filter + 1
+    img_fourier = np.fft.fft2(img)
+    kernel_fourier = np.fft.fft2(kernel)
 
-    return None
+    high_pass_filter_abs = np.abs(high_pass_filter)
+    filtered_img_fourier = kernel_fourier * img_fourier / (high_pass_filter_abs**2 + alpha * (high_pass_filter_abs**2))
+    return np.abs(np.fft.ifft2(filtered_img_fourier))
+
 
 def richardson_lucy_deconv(measured, kernel, tot_iter, init=0.5):
     """
@@ -30,17 +37,13 @@ def richardson_lucy_deconv(measured, kernel, tot_iter, init=0.5):
     g1 = np.full(measured.shape, init)     # init to something nonnegative
     kernel_mirror = kernel[::-1, ::-1]
     for _ in range(tot_iter):
-        denom = np.abs(convolve(kernel, g1))
+        denom = np.abs(fftconvolve(kernel, g1, 'same'))
         frac = measured / denom
-        g1 = g1 * np.abs(convolve(frac, kernel_mirror))
+        g1 = g1 * np.abs(fftconvolve(frac, kernel_mirror, 'same'))
 
     return g1
 
-def convolve(a, b):
-    A = np.fft.fft2(a[::-1, ::-1])
-    B = np.fft.fft2(b)
-    result = np.abs(np.fft.ifft2(A * B))
-    return result
+
 
 def wiener_deconv(img, kernel, noise_spectra, obj_spectra):
     """
@@ -51,9 +54,24 @@ def wiener_deconv(img, kernel, noise_spectra, obj_spectra):
     kernel_fourier = np.fft.fft2(kernel)
     img_fourier = np.fft.fft2(img)
     a = 1 / kernel_fourier * (1 / (1 + 1/(np.abs(kernel_fourier)**2 + SNR)))
-    return np.fft.ifft(a * img_fourier)
+    return np.abs(np.fft.ifft2(a * img_fourier))
 
     
+def make_circ_mask(shape, radii):
+    h, w = shape
+    Y, X = np.ogrid[:h, :w]
+    center = (int(w / 2), int(h / 2))
+    dist_from_center = np.sqrt((X - center[0])**2 + (Y - center[1])**2)
+
+    mask = dist_from_center <= radii
+    mask = np.where(mask, 1., 0.)
+    return mask
 
 
+def convolve(a, b):
+    # A = np.fft.fft2(a[::-1, ::-1])
+    A = np.fft.fft2(a)
+    B = np.fft.fft2(b)
+    result = np.abs(np.fft.ifft2(A * B))
+    return result
 
