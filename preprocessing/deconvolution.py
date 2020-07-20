@@ -1,6 +1,13 @@
+import os, sys
+sys.path.append('../AtomDetector/')
+
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.signal import convolve2d
 from scipy.signal import fftconvolve
+from utils import *
+import simulator
+
 
 
 """
@@ -18,16 +25,20 @@ def inv_filter(img, kernel):
 
 
 
-def regularized_filter(img, kernel, alpha, high_pass_filter=None):
+def regularized_filter(img, kernel, alpha=0.80, high_pass_filter=None):
     if high_pass_filter == None:
-        high_pass_filter = make_circ_mask(img.shape, 20)
+        high_pass_filter = make_circ_mask(img.shape, 4)
         high_pass_filter = -high_pass_filter + 1
+
+    high_pass_filter = np.fft.ifftshift(high_pass_filter)
+    # plt.imshow(high_pass_filter)
+    # plt.colorbar()
     img_fourier = np.fft.fft2(img)
     kernel_fourier = np.fft.fft2(kernel)
 
     high_pass_filter_abs = np.abs(high_pass_filter)
-    filtered_img_fourier = kernel_fourier * img_fourier / (high_pass_filter_abs**2 + alpha * (high_pass_filter_abs**2))
-    return np.abs(np.fft.ifft2(filtered_img_fourier))
+    filtered_img_fourier = kernel_fourier * img_fourier / (kernel_fourier**2 + alpha * (high_pass_filter_abs**2))
+    return np.abs(np.fft.fftshift(np.fft.ifft2(filtered_img_fourier)))
 
 
 def richardson_lucy_deconv(measured, kernel, tot_iter, init=0.5):
@@ -61,15 +72,8 @@ def wiener_deconv(img, kernel, noise_spectra, obj_spectra):
     return np.abs(np.fft.fftshift(np.fft.ifft2(a * img_fourier)))
 
     
-def make_circ_mask(shape, radii):
-    h, w = shape
-    Y, X = np.ogrid[:h, :w]
-    center = (int(w / 2), int(h / 2))
-    dist_from_center = np.sqrt((X - center[0])**2 + (Y - center[1])**2)
 
-    mask = dist_from_center <= radii
-    mask = np.where(mask, 1., 0.)
-    return mask
+
 
 
 

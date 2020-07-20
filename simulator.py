@@ -1,5 +1,9 @@
+import sys
+sys.path.append('../AtomDetector/')
 import numpy as np
 import matplotlib.pyplot as plt
+from utils import gaussian, visualize
+
 
 class simulator():
 
@@ -8,6 +12,8 @@ class simulator():
     def __init__(self, img_size, exposure_time):
         self.img_size = img_size
         self.exposure_time = exposure_time
+
+
 
     def _photon_signal_to_electric_signal(self, signal):
         electric_signal = self.exposure_time * signal * simulator.quantum_efficiency
@@ -36,6 +42,8 @@ class simulator():
             atom_count = 0
             N = 1
         elif np.ndim(x0) == 1:
+            x0 = np.array(x0)
+            y0 = np.array(y0)
             if x0.shape[0] != y0.shape[0]:
                 raise Exception(f"Shape doesn't match for x0 and y0:\n {x0.shape[0]} is not {y0.shape[0]}")
             atom_count = N = x0.shape[0]
@@ -72,6 +80,8 @@ class simulator():
         if no_atom:
             atom_count = 0
         elif np.ndim(x0) == 1:
+            x0 = np.array(x0)
+            y0 = np.array(y0)
             if x0.shape[0] != y0.shape[0]:
                 raise Exception(f"Shape doesn't match for x0 and y0:\n {x0.shape[0]} is not {y0.shape[0]}")
             atom_count = x0.shape[0]
@@ -96,26 +106,6 @@ class simulator():
 
 
 
-def gaussian(x, y, x0, y0, s):
-        return np.exp(-(x-x0)**2 / (2*s)) * np.exp(-(y-y0)**2 / (2*s))
 
 
-def visualize(mat2d, figsize=5):
-    
-    fig = plt.figure(figsize=(figsize, figsize))
 
-    ax = fig.add_subplot(111)
-    ax.set_title('colorMap')
-    plt.imshow(mat2d, cmap='hot')
-    ax.set_aspect('equal')
-    cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
-    cax.get_xaxis().set_visible(False)
-    cax.get_yaxis().set_visible(False)
-    cax.patch.set_alpha(0)
-    cax.set_frame_on(False)
-    cbaxes = fig.add_axes([0.95, 0.1, 0.03, 0.8]) 
-    plt.colorbar(orientation='vertical', cax=cbaxes)
-    plt.xlabel("x [pixels]")
-    plt.ylabel("y [pixels]")
-    # cb = plt.colorbar(ax, cax = cax)  
-    plt.show()
