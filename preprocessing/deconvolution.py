@@ -72,10 +72,4 @@ def make_circ_mask(shape, radii):
     return mask
 
 
-def convolve(a, b):
-    # A = np.fft.fft2(a[::-1, ::-1])
-    A = np.fft.fft2(a)
-    B = np.fft.fft2(b)
-    result = np.abs(np.fft.ifft2(A * B))
-    return result
 
