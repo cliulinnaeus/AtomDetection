@@ -57,6 +57,14 @@ def make_circ_mask(shape, radii):
     return mask
 
 
+def make_square_mask(shape, height, width):
+    mask = np.zeros(shape)
+    H, W = shape
+    x = (H - height) // 2
+    y = (W - width) // 2
+    mask[x:x+height+1, y:y+width+1] = 1
+    return mask
+
 
 
 
