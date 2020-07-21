@@ -52,7 +52,6 @@ class simulator():
         
         signals = []
         for i in range(N):           
-            # is a number
             if no_atom: 
                 atom_signal = 0
             else:
@@ -60,12 +59,12 @@ class simulator():
                     atom_signal = self._create_signal(x0, y0, photons_from_atom)    
                 else:
                     atom_signal = self._create_signal(x0[i], y0[i], photons_from_atom)
-            background_signal = self._create_background(photons_in_background)
-
-            shot_noise = self._shot_noise_from_signal(atom_signal + background_signal)
+            # visualize(background_signal)
+            shot_noise = self._shot_noise_from_signal(atom_signal)
             # signals.append(shot_noise + self._photon_signal_to_electric_signal(atom_signal + background_signal))
             signals.append(shot_noise)
-        output = np.sum(np.array(signals), axis=0)
+        background_noise = self._shot_noise_from_signal(self._create_background(photons_in_background))
+        output = np.sum(np.array(signals), axis=0) + background_noise
         if verbose:
             visualize(output)
             print(self)
