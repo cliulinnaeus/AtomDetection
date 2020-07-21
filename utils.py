@@ -67,5 +67,15 @@ def make_square_mask(shape, height, width):
 
 
 
-
+def fftconvolve_wrap(img, kernel):
+    # padded_img = np.zeros(img.shape * 3)
+    # padded_img 
+    padded_img = np.pad(img, img.shape[0], mode='wrap')
+    padded_kernel = np.pad(kernel, kernel.shape[0], mode='constant')
+    padded_img_fourier = np.fft.fft2(padded_img)
+    padded_kernel_fourier = np.fft.fft2(padded_kernel)
+    padded_result = np.abs(np.fft.fftshift(np.fft.ifft2(padded_img_fourier * padded_kernel_fourier)))
+    H, W = img.shape
+    result = padded_result[H:2*H, W:2*W]
+    return result
 

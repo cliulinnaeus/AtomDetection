@@ -41,6 +41,9 @@ def regularized_filter(img, kernel, alpha=0.80, high_pass_filter=None):
     return np.abs(np.fft.fftshift(np.fft.ifft2(filtered_img_fourier)))
 
 
+
+
+
 def richardson_lucy_deconv(img, kernel, tot_iter, init=0.5):
     """
     Compute the Richardson Lucy Deconvolution for TOT_ITER times
@@ -51,11 +54,13 @@ def richardson_lucy_deconv(img, kernel, tot_iter, init=0.5):
         g1 = np.full(img.shape, init)     # init to something nonnegative
     kernel_mirror = kernel[::-1, ::-1]
     for _ in range(tot_iter):
-        denom = np.abs(fftconvolve(kernel, g1, 'same'))
+        denom = np.abs(fftconvolve_wrap(kernel, g1))
         frac = img / denom
-        g1 = g1 * np.abs(fftconvolve(frac, kernel_mirror, 'same'))
+        g1 = g1 * np.abs(fftconvolve_wrap(frac, kernel_mirror))
 
     return g1
+
+
 
 
 
