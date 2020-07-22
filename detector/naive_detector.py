@@ -14,8 +14,8 @@ class detector():
         if x0+dx-1 > img_size or y0+dy-1 >img_size:
             raise Exception("Detection region is not in range")
         
-        self.x0 = x0
-        self.y0 = y0
+        self.x0 = x0 - dx//2
+        self.y0 = y0 - dy//2
         self.dx = dx
         self.dy = dy
 
@@ -42,8 +42,8 @@ class detector():
 
     # take a validation set out of data
     # 
-    def train(self, data, labels, verbose=False):
-        data_tr, data_val, labels_tr, labels_val = train_test_split(data, labels, test_size=0.33)
+    def train(self, data, labels, val_size=0.33, verbose=False):
+        data_tr, data_val, labels_tr, labels_val = train_test_split(data, labels, test_size=val_size)
 
         sums = []
         for d in data_tr:
@@ -100,7 +100,9 @@ class detector():
         plt.show()
     
 
-
+    #TODO: def roc_curve(true_labels, scores)
+            # plots roc curve
+            # returns fpr, tpr, auc 
 
 
 

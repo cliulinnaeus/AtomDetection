@@ -1,6 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt
-
+import time 
+import simulator
 
 
 def visualize(mat2d, figsize=5, title=None, xlabel=None, ylabel=None):
@@ -79,3 +80,32 @@ def fftconvolve_wrap(img, kernel):
     result = padded_result[H:2*H, W:2*W]
     return result
 
+
+# data label pairs generator 
+# SNR must be an array
+def generate_data_labels(img_size, x0, y0, SNR, N):
+    prev_time = time.time()
+
+    sim = simulator.simulator(img_size, 1)
+
+    data_tr_for_different_snr = []
+    labels_tr_for_different_snr = []
+    for snr in SNR:
+        data_tr = []
+        labels_tr = []
+        for i in range(N):
+            r = np.random.rand()
+            if r > 0.5: 
+                labels_tr.append(1)
+                
+                data = sim.create_simulation_from_SNR(x0, y0, snr)
+                data_tr.append(data)
+            else:
+                labels_tr.append(0)
+                data = sim.create_simulation_from_SNR(x0, y0, snr, no_atom=True)
+                data_tr.append(data)
+        data_tr_for_different_snr.append(np.array(data_tr))
+        labels_tr_for_different_snr.append(np.array(labels_tr))
+
+    print(f"time used: {time.time() - prev_time}")
+    return np.array(data_tr_for_different_snr), np.array(labels_tr_for_different_snr)

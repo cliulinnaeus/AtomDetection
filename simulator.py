@@ -22,7 +22,7 @@ class simulator():
     # poisson returns integers
     def _shot_noise_from_signal(self, signal):
         lam = self._photon_signal_to_electric_signal(signal)
-        return np.random.poisson(lam=lam, size=signal.shape)
+        return np.random.poisson(lam=lam, size=(self.img_size, self.img_size))
     
     def _create_signal(self, x0, y0, photons_from_atom, verbose=False):       
         x = y = np.linspace(0, self.img_size-1, self.img_size)
@@ -97,6 +97,13 @@ class simulator():
             print(f"y0: {y0}")
 
         return output
+
+    # create data label pairs for training
+    def create_data_labels_pairs(self, count, SNR):
+
+
+        return None
+
 
     def __str__(self):
         string = f"Instance info:\nimg_size: {self.img_size}\nexposure_time: {self.exposure_time}\natom_variance: {simulator.variance}\nquantum_efficiency: {simulator.quantum_efficiency}"
