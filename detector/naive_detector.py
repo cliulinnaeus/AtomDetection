@@ -28,7 +28,7 @@ class detector():
         if len(data.shape) == 2:
             data = np.array([data])
         for d in data:
-            box = d[self.x0:self.x0+self.dx, self.y0:self.y0+self.dy]
+            box = d[self.y0:self.y0+self.dy, self.x0:self.x0+self.dx]
             tot_sum = np.sum(box)
             # print(tot_sum)
             if tot_sum > self.thresh:
@@ -47,7 +47,7 @@ class detector():
 
         sums = []
         for d in data_tr:
-            box = d[self.x0:self.x0+self.dx, self.y0:self.y0+self.dy]
+            box = d[self.y0:self.y0+self.dy, self.x0:self.x0+self.dx]
             sums.append(np.sum(box))
 
         max_sum = np.max(sums)

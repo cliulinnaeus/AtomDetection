@@ -44,7 +44,7 @@ def regularized_filter(img, kernel, alpha=0.80, high_pass_filter=None):
 
 
 
-def richardson_lucy_deconv(img, kernel, tot_iter, init=0.5):
+def richardson_lucy_deconv(img, kernel, tot_iter=30, init=0.5):
     """
     Compute the Richardson Lucy Deconvolution for TOT_ITER times
     """

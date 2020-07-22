@@ -109,3 +109,14 @@ def generate_data_labels(img_size, x0, y0, SNR, N):
 
     print(f"time used: {time.time() - prev_time}")
     return np.array(data_tr_for_different_snr), np.array(labels_tr_for_different_snr)
+
+
+# normalize to have a variance of 1, mean of 0
+def normalize(data_batch): 
+    mean = np.mean(data_batch, axis=0)
+    std = np.std(data_batch, axis=0)
+
+    return (data_batch - mean) / std
+
+
+
