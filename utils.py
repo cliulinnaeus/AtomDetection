@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../AtomDetector/')
 import numpy as np 
 import matplotlib.pyplot as plt
 import time 
@@ -23,11 +25,11 @@ def visualize(mat2d, figsize=5, title=None, xlabel=None, ylabel=None):
     cbaxes = fig.add_axes([0.95, 0.1, 0.03, 0.8]) 
     plt.colorbar(orientation='vertical', cax=cbaxes)
     if xlabel == None or ylabel == None:
-        plt.xlabel("x [pixels]")
-        plt.ylabel("y [pixels]")
+        ax.set_xlabel("x [pixels]")
+        ax.set_ylabel("y [pixels]")
     else:
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
     
     plt.show()
 

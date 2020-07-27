@@ -2,7 +2,42 @@ import sys
 sys.path.append('../AtomDetector/')
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import gaussian, visualize
+
+
+
+def _gaussian(x, y, x0, y0, s):
+        return np.exp(-(x-x0)**2 / (2*s)) * np.exp(-(y-y0)**2 / (2*s))
+
+
+
+def _visualize(mat2d, figsize=5, title=None, xlabel=None, ylabel=None):
+    
+    fig = plt.figure(figsize=(figsize, figsize))
+
+    ax = fig.add_subplot(111)
+    if title == None:
+        ax.set_title('colorMap')
+    else: 
+        ax.set_title(title)
+    plt.imshow(mat2d, cmap='hot')
+    ax.set_aspect('equal')
+    cax = fig.add_axes([0.12, 0.1, 0.78, 0.8])
+    cax.get_xaxis().set_visible(False)
+    cax.get_yaxis().set_visible(False)
+    cax.patch.set_alpha(0)
+    cax.set_frame_on(False)
+    cbaxes = fig.add_axes([0.95, 0.1, 0.03, 0.8]) 
+    plt.colorbar(orientation='vertical', cax=cbaxes)
+    if xlabel == None or ylabel == None:
+        plt.xlabel("x [pixels]")
+        plt.ylabel("y [pixels]")
+    else:
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+    
+    plt.show()
+
+
 
 
 class simulator():
@@ -27,9 +62,9 @@ class simulator():
     def _create_signal(self, x0, y0, photons_from_atom, verbose=False):       
         x = y = np.linspace(0, self.img_size-1, self.img_size)
         xgrid, ygrid = np.meshgrid(x, y)  
-        signal = gaussian(xgrid, ygrid, x0, y0, simulator.variance) * photons_from_atom
+        signal = _gaussian(xgrid, ygrid, x0, y0, simulator.variance) * photons_from_atom
         if verbose:
-            visualize(signal)
+            _visualize(signal)
         return signal
         
     def _create_background(self, photons_in_background):
@@ -66,7 +101,7 @@ class simulator():
         background_noise = self._shot_noise_from_signal(self._create_background(photons_in_background))
         output = np.sum(np.array(signals), axis=0) + background_noise
         if verbose:
-            visualize(output)
+            _visualize(output)
             print(self)
             print(f"atom count: {atom_count}")
             print(f"photons per atom: {photons_from_atom}")
@@ -88,7 +123,7 @@ class simulator():
             atom_count = 1   
         output = self.create_simulation(x0, y0, SNR, 1, no_atom=no_atom)
         if verbose:
-            visualize(output)
+            _visualize(output)
             print(self)
             print(f"atom count: {atom_count}")
             print("photons_in_background is set to 1 by default")
@@ -109,9 +144,6 @@ class simulator():
         string = f"Instance info:\nimg_size: {self.img_size}\nexposure_time: {self.exposure_time}\natom_variance: {simulator.variance}\nquantum_efficiency: {simulator.quantum_efficiency}"
 
         return string
-
-
-
 
 
 
