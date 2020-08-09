@@ -34,6 +34,9 @@ def visualize(mat2d, figsize=5, title=None, xlabel=None, ylabel=None):
     plt.show()
 
 
+
+
+
 def gaussian_kernel(img_size, variance, verbose=False):
     x = y = np.linspace(0, img_size-1, img_size)
     xgrid, ygrid = np.meshgrid(x, y)  
@@ -47,6 +50,19 @@ def gaussian_kernel(img_size, variance, verbose=False):
 
 def gaussian(x, y, x0, y0, s):
         return np.exp(-(x-x0)**2 / (2*s)) * np.exp(-(y-y0)**2 / (2*s))
+
+
+def create_signal(img_size, x0, y0):      
+    signals = [] 
+    
+    for i in range(x0.shape[0]):
+        x = y = np.linspace(0, img_size-1, img_size)
+        xgrid, ygrid = np.meshgrid(x, y)  
+        signal = gaussian(xgrid, ygrid, x0[i], y0[i], 5)
+        signals.append(signal)
+    
+    signals = np.array(signals)
+    return np.sum(signals, axis=0)
 
 
 def make_circ_mask(shape, radii):

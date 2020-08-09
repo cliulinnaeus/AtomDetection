@@ -48,6 +48,12 @@ def richardson_lucy_deconv(img, kernel, tot_iter=30, init=0.5):
     """
     Compute the Richardson Lucy Deconvolution for TOT_ITER times
     """
+    # img, kernel must both sum to 1, and are both greater or equal to 0
+    kernel = kernel / np.sum(kernel)
+    img = img / np.sum(img)
+
+    print(np.sum(kernel))
+    print(np.sum(img))
     if np.ndim(init) > 0:
         g1 = init
     else:

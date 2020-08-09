@@ -50,14 +50,17 @@ class detector():
             box = d[self.y0:self.y0+self.dy, self.x0:self.x0+self.dx]
             sums.append(np.sum(box))
 
-        max_sum_idx = np.argmax(sums)
+        # max_sum_idx = np.argmax(sums)
         max_sum = np.max(sums)
         min_sum = np.min(sums)
-        print(f"maxsumidx: {max_sum_idx}")
-        print(f"maxsum:{max_sum}")
-        print(f"minsum:{min_sum}")
+        # print(f"maxsumidx: {max_sum_idx}")
+        # print(f"maxsum:{max_sum}")
+        # print(f"minsum:{min_sum}")
         if verbose:
             plt.hist(sums, bins=50, normed=True)
+            plt.title("Distribution of the Sum of Pixels in a Subsection")
+            plt.xlabel("Sum of Pixels")
+            plt.ylabel("Probability")
             plt.show()
 
         thresh_candidates = np.linspace(min_sum, max_sum, int(max_sum-min_sum+1)//2)
